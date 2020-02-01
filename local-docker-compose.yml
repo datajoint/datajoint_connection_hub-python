@@ -36,6 +36,7 @@ services:
     command: >
       /bin/sh -c
        "
+        tail -f /dev/null;
         mkdir /home/dja/datajoint-python;
         git clone -b plugin --single-branch https://github.com/guzman-raphael/datajoint-python.git /home/dja/datajoint-python
         # pip install --user nose nose-cov coveralls ptvsd twine;
