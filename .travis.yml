@@ -17,11 +17,11 @@ main: &main
       language: shell
       script:
         # create using: echo \"$(sed ':a;N;$!ba;s|\t|\\t|g' ./datajoint-dev.pem | sed 's| |\\ |g' | sed 's|"|\\"|g' | sed ':a;N;$!ba;s|\n|\\n|g')\"
-        - echo $DJ_PRIVATE_KEY > ./datajoint-dev.pem 2>&1
-        - sed -i 's|\\n|\n|g' ./datajoint-dev.pem
-        - sed -i 's|\\"|"|g' ./datajoint-dev.pem
-        - sed -i 's|\\ | |g' ./datajoint-dev.pem
-        - sed -i 's|\\t|\t|g' ./datajoint-dev.pem
+        - echo $DJ_PRIVATE_KEY > /home/dja/keys/datajoint-dev.pem 2>&1
+        - sed -i 's|\\n|\n|g' /home/dja/keys/datajoint-dev.pem
+        - sed -i 's|\\"|"|g' /home/dja/keys/datajoint-dev.pem
+        - sed -i 's|\\ | |g' /home/dja/keys/datajoint-dev.pem
+        - sed -i 's|\\t|\t|g' /home/dja/keys/datajoint-dev.pem
         - docker-compose -f LNX-docker-compose.yml up --build --exit-code-from app
 jobs:
   include:

@@ -27,7 +27,7 @@ def get_host_hook(host_input):
                 raise DataJointError(
                     'DataJoint Hub database resource `{}/{}/{}` not found.'.format(
                     hub_path[0][1:], hub_path[1][1:], hub_path[2][1:]))
-            elif resp.status_code == 501:
+            elif resp.status_code == 406:
                 raise DataJointError(
                     'DataJoint Hub endpoint `{}{}{}{}` unavailable.'.format(
                     REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE, API_TARGETS['PROJECT']))

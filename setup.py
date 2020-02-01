@@ -26,7 +26,7 @@ setuptools.setup(
     ],
     setup_requires=['raphael_python_metadata'],
     install_requires=['datajoint', 'requests'],
-    datajoint_privkey_path='./datajoint-dev.pem',
+    datajoint_privkey_path='~/keys/datajoint-dev.pem',
     entry_points={
         'datajoint.plugins': 'connection = {}'.format(pkg_name)
     },

@@ -24,9 +24,14 @@ const requestListener = function (req, res) {
     } else if (urlObject.pathname === '/status' && req.method === 'GET') {
         res.writeHead(200);
     } else {
-        res.writeHead(501);
+        res.writeHead(406);
     }
     res.end();
 }
 const server = http.createServer(requestListener);
 server.listen(4000);
+
+
+// 400 no handler
+// 405 bad verb
+// 406 bad target

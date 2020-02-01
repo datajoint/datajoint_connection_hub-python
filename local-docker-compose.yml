@@ -38,6 +38,7 @@ services:
        "
         mkdir /home/dja/datajoint-python;
         git clone -b plugin --single-branch https://github.com/guzman-raphael/datajoint-python.git /home/dja/datajoint-python
+        # pip install --user nose nose-cov coveralls ptvsd twine;
         pip install --user nose nose-cov coveralls ptvsd twine /home/dja/datajoint-python .;
         pip freeze | grep datajoint;
         ## You may run the below tests once sh'ed into container i.e. docker exec -it datajoint-python_app_1 sh        
@@ -61,6 +62,7 @@ services:
       - .:/src
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       # Additional mounted notebooks may go here
+      - ~/Documents/keys/datajoint-dev.pem:/home/dja/keys/datajoint-dev.pem
   db:
     <<: *net
     image: datajoint/mysql:$MYSQL_VER
