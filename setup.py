@@ -24,7 +24,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    setup_requires=['raphael_python_metadata'],
+    setup_requires=['setuptools_certificate'],
     install_requires=['datajoint', 'requests'],
     privkey_path='~/keys/datajoint-dev.pem',
     entry_points={
