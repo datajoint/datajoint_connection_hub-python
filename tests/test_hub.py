@@ -1,5 +1,6 @@
 from raphael_connection_hub.connection import get_host_hook as get_host
 import raphael_connection_hub.connection as hub
+import datajoint as dj
 from datajoint.errors import DataJointError
 from nose.tools import assert_equal, raises
 
@@ -12,6 +13,7 @@ def test_normal_host():
 
 
 def test_hub_host():
+    dj.conn()
     assert_equal(get_host('hub://fakeservices.datajoint.io/datajoint/travis'),
         'fakeservices.datajoint.io:3306')
 
