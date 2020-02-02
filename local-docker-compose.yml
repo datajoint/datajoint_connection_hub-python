@@ -60,8 +60,8 @@ services:
     volumes:
       - .:/src
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      # Additional mounted notebooks may go here
       - ~/Documents/keys/datajoint-dev.pem:/home/dja/keys/datajoint-dev.pem:ro
+      # Additional mounted notebooks may go here
   db:
     <<: *net
     image: datajoint/mysql:$MYSQL_VER

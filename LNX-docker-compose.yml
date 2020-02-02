@@ -49,6 +49,7 @@ services:
     volumes:
       - .:/src
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /home/travis/keys/datajoint-dev.pem:/home/dja/keys/datajoint-dev.pem:ro
       # Additional mounted notebooks may go here
   db:
     <<: *net
