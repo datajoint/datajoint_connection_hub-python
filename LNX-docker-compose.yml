@@ -16,11 +16,9 @@ services:
       fakeservices.datajoint.io:
         condition: service_healthy
     environment:
-      # - DJ_HOST=db
       - DJ_HOST=hub://fakeservices.datajoint.io/datajoint/travis
       - DJ_USER=root
       - DJ_PASS=simple
-      # - DJ_TEST_HOST=db
       - DJ_TEST_HOST=hub://fakeservices.datajoint.io/datajoint/travis
       - DJ_TEST_USER=datajoint
       - DJ_TEST_PASSWORD=datajoint
