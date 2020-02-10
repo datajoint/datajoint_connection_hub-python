@@ -107,7 +107,7 @@ services:
     user: ${UID}:${GID}
     volumes:
       - .:/src
-      - ~/Documents/keys/datajoint-dev.pem:/home/dja/keys/datajoint-dev.pem:ro
+      - /home/travis/keys/datajoint-dev.pem:/home/dja/keys/datajoint-dev.pem:ro
       # Additional mounted notebooks may go here
 networks:
   main:
