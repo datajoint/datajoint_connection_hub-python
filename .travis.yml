@@ -28,7 +28,7 @@ main: &main
         - sed -i 's|\\"|"|g' /home/travis/keys/datajointbot-test.pem
         - sed -i 's|\\ | |g' /home/travis/keys/datajointbot-test.pem
         - sed -i 's|\\t|\t|g' /home/travis/keys/datajointbot-test.pem
-        - sudo chmod g-r,o-r /home/travis/keys/datajointbot-test.pem
+        - sudo chmod u-x,g-rwx,o-rwx /home/travis/keys/datajointbot-test.pem
         - eval "$(ssh-agent -s)"
         - ssh-add /home/travis/keys/datajointbot-test.pem
         - ./serve.sh up TRAVIS
