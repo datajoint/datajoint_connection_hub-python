@@ -1,66 +1,19 @@
-version: '2.2'
+version: '2.4'
 x-net: &net
   networks:
       - main
 services:
-  app:
-    <<: *net
-    image: datajoint/pydev:${PY_VER}-alpine${ALPINE_VER}
-    depends_on:
-      db:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      hub-redirect:
-        condition: service_healthy
-      fakeservices.datajoint.io:
-        condition: service_healthy
-    environment:
-      - DJ_HOST=hub://fakeservices.datajoint.io/datajoint/travis
-      - DJ_USER=root
-      - DJ_PASS=simple
-      - DJ_TEST_HOST=hub://fakeservices.datajoint.io/datajoint/travis
-      - DJ_TEST_USER=datajoint
-      - DJ_TEST_PASSWORD=datajoint
-      # If running tests locally, make sure to add entry in /etc/hosts for 127.0.0.1 fakeservices.datajoint.io
-      - S3_ENDPOINT=fakeservices.datajoint.io:9000
-      - S3_ACCESS_KEY=datajoint
-      - S3_SECRET_KEY=datajoint
-      - S3_BUCKET=datajoint-test
-      - PYTHON_USER=dja
-      - JUPYTER_PASSWORD=datajoint
-      - DISPLAY
-    working_dir: /src
-    command: >
-      /bin/sh -c
-       "
-        mkdir /home/dja/datajoint-python;
-        git clone -b plugin --single-branch https://github.com/guzman-raphael/datajoint-python.git /home/dja/datajoint-python
-        pip install --user nose nose-cov coveralls /home/dja/datajoint-python .;
-        pip freeze | grep datajoint;
-        # coveralls;
-        # integration testing then plugin tests (if former passes)
-        nosetests -vs --tests=/home/dja/datajoint-python/tests && nosetests -vsw tests;
-        # nosetests -vs --tests=/home/dja/datajoint-python/tests && nosetests -vsw tests --with-coverage --cover-package=raphael_connection_hub;
-       "
-    ports:
-      - "8888:8888"
-    user: ${UID}:${GID}
-    volumes:
-      - .:/src
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - /home/travis/keys/datajoint-dev.pem:/home/dja/keys/datajoint-dev.pem:ro
-      # Additional mounted notebooks may go here
   db:
     <<: *net
     image: datajoint/mysql:$MYSQL_VER
     environment:
-      - MYSQL_ROOT_PASSWORD=simple
+      - MYSQL_ROOT_PASSWORD=${DJ_PASS}
     # ports:
     #   - "3306:3306"
     # To persist MySQL data
     # volumes:
     #   - ./mysql/data:/var/lib/mysql
+    #   - ./mysql/my.cnf:/etc/mysql/my.cnf
   minio:
     <<: *net
     environment:
@@ -79,45 +32,83 @@ services:
       timeout: 5s
       retries: 60
       interval: 1s
+  hub:
+    extends:
+      file: djhub/api/docker-compose.yml
+      service: hubapi
+    <<: *net
+    # ports:
+    #   - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
   fakeservices.datajoint.io:
     <<: *net
-    image: nginx:alpine
+    image: raphaelguzman/nginx:v0.0.2
     environment:
-      - URL=datajoint.io
-      - SUBDOMAINS=fakeservices
-      - MINIO_SERVER=http://minio:9000
-      - REDIRECT_SERVER=http://hub-redirect:4000
-      - MYSQL_SERVER=db:3306
-    entrypoint: /entrypoint.sh
-    healthcheck:
-      test: wget --quiet --tries=1 --spider https://fakeservices.datajoint.io:443/minio/health/live || exit 1
-      timeout: 5s
-      retries: 300
-      interval: 1s
-    ports:
-      - "9000:9000"
-      - "443:443"
-      - "4000:4000"
-      - "3306:3306"
-    volumes:
-      - ./tests/nginx/base.conf:/base.conf
-      - ./tests/nginx/nginx.conf:/nginx.conf
-      - ./tests/nginx/entrypoint.sh:/entrypoint.sh
-      - ./tests/nginx/fullchain.pem:/certs/fullchain.pem
-      - ./tests/nginx/privkey.pem:/certs/privkey.pem
-  hub-redirect:
-    <<: *net
-    image: node:13-alpine3.10
-    working_dir: /
-    entrypoint: node /app.js
+    - ADD_db_TYPE=DATABASE
+    - ADD_db_ENDPOINT=db:3306
+    - ADD_minio_TYPE=MINIO
+    - ADD_minio_ENDPOINT=minio:9000
+    - ADD_minio_PREFIX=/
+    - ADD_hub_TYPE=REST
+    - ADD_hub_ENDPOINT=hub:5000
+    - ADD_hub_PREFIX=/api
     # ports:
-    #   - "4000:4000"
+    #   - "443:443"
+    #   - "3306:3306"
+    #   - "5000:5000"
+    #   - "9000:9000"
+    depends_on:
+      db:
+        condition: service_healthy
+      hub:
+        condition: service_started
+  app:
+    <<: *net
+    image: datajoint/pydev:${PY_VER}-alpine${ALPINE_VER}
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      fakeservices.datajoint.io:
+        condition: service_healthy
+      hub:
+        condition: service_started
+    environment:
+      - DJ_HOST=fakeservices.datajoint.io
+      - DJ_USER
+      - DJ_PASS
+      - DJ_TEST_HOST=fakeservices.datajoint.io
+      - DJ_TEST_USER=datajoint
+      - DJ_TEST_PASSWORD=datajoint
+      # If running tests locally, make sure to add entry in /etc/hosts for 127.0.0.1 fakeservices.datajoint.io
+      - S3_ENDPOINT=fakeservices.datajoint.io:9000
+      - S3_ACCESS_KEY=datajoint
+      - S3_SECRET_KEY=datajoint
+      - S3_BUCKET=datajoint-test
+      - PYTHON_USER=dja
+      - JUPYTER_PASSWORD=datajoint
+      - DISPLAY
+    working_dir: /src
+    command: >
+      /bin/sh -c
+       "
+        mkdir /home/dja/datajoint-python;
+        git clone -b plugin --single-branch https://github.com/guzman-raphael/datajoint-python.git /home/dja/datajoint-python
+        pip install --user nose nose-cov coveralls /home/dja/datajoint-python . ./djhub/api;
+        pip freeze | grep datajoint;
+        # datajoint nosetests, then plugin nosetests
+        nosetests -vs --tests=/home/dja/datajoint-python/tests && nosetests -vsw tests;
+       "
+    # ports:
+    #   - "8888:8888"
+    user: ${UID}:${GID}
     volumes:
-      - ./tests/redirect/app.js:/app.js
-    healthcheck:
-      test: wget --quiet --tries=1 --spider http://hub-redirect:4000/status || exit 1
-      timeout: 5s
-      retries: 300
-      interval: 1s
+      - .:/src
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/Documents/keys/datajoint-dev.pem:/home/dja/keys/datajoint-dev.pem:ro
+      # Additional mounted notebooks may go here
 networks:
   main:

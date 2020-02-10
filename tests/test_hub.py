@@ -15,7 +15,6 @@ def test_normal_host():
 def test_hub_host():
     host_input = 'hub://fakeservices.datajoint.io/datajoint/travis'
     dj.conn(host=host_input, reset=True)
-    # assert_equal(get_host('hub://fakeservices.datajoint.io/orgtwo/project2'),
     assert_equal(get_host(host_input), 'fakeservices.datajoint.io:3306')
 
 

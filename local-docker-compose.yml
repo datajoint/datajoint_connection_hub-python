@@ -32,20 +32,6 @@ services:
       timeout: 5s
       retries: 60
       interval: 1s
-  hub-redirect:
-    <<: *net
-    image: node:13-alpine3.10
-    working_dir: /
-    entrypoint: node /app.js
-    # ports:
-    #   - "4000:4000"
-    volumes:
-      - ./tests/redirect/app.js:/app.js
-    healthcheck:
-      test: wget --quiet --tries=1 --spider http://hub-redirect:4000/status || exit 1
-      timeout: 5s
-      retries: 300
-      interval: 1s
   hub:
     extends:
       file: djhub/api/docker-compose.yml
@@ -53,13 +39,6 @@ services:
     <<: *net
     # ports:
     #   - "5000:5000"
-    # entrypoint: ""
-    # command: >
-    #   /bin/bash -c
-    #    "
-    #     python test/example_data.py;
-    #     /src/hubapi/hubapi prod;
-    #    "
     depends_on:
       db:
         condition: service_healthy
@@ -72,16 +51,12 @@ services:
     - ADD_minio_TYPE=MINIO
     - ADD_minio_ENDPOINT=minio:9000
     - ADD_minio_PREFIX=/
-    - ADD_hub-redirect_TYPE=REST
-    - ADD_hub-redirect_ENDPOINT=hub-redirect:4000
-    - ADD_hub-redirect_PREFIX=/api2
     - ADD_hub_TYPE=REST
     - ADD_hub_ENDPOINT=hub:5000
     - ADD_hub_PREFIX=/api
     ports:
       - "443:443"
       - "3306:3306"
-      - "4000:4000"
       - "5000:5000"
       - "9000:9000"
     depends_on:
@@ -97,8 +72,6 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
-      hub-redirect:
-        condition: service_healthy
       fakeservices.datajoint.io:
         condition: service_healthy
       hub:
@@ -107,11 +80,9 @@ services:
       - TWINE_USERNAME
       - TWINE_PASSWORD
       - DJ_HOST=fakeservices.datajoint.io
-      # - DJ_HOST=hub://fakeservices.datajoint.io/orgtwo/project2
       - DJ_USER
       - DJ_PASS
       - DJ_TEST_HOST=fakeservices.datajoint.io
-      # - DJ_TEST_HOST=hub://fakeservices.datajoint.io/orgtwo/project2
       - DJ_TEST_USER=datajoint
       - DJ_TEST_PASSWORD=datajoint
       # If running tests locally, make sure to add entry in /etc/hosts for 127.0.0.1 fakeservices.datajoint.io
