@@ -6,7 +6,7 @@ up() {
         env $(cat LNX.env;echo;cat common.env;echo;cat private.env) \
             docker-compose -f local-docker-compose.yml up --build
     elif [ "$1" = "TRAVIS" ]; then
-        env $(cat LNX.env;echo;cat common.env) \
+        env $(cat common.env) \
             docker-compose -f LNX-docker-compose.yml up --build --exit-code-from app
     fi
 }
@@ -16,7 +16,7 @@ down() {
         env $(cat LNX.env;echo;cat common.env;echo;cat private.env) \
             docker-compose -f local-docker-compose.yml down
     elif [ "$1" = "TRAVIS" ]; then
-        env $(cat LNX.env;echo;cat common.env) \
+        env $(cat common.env) \
             docker-compose -f LNX-docker-compose.yml down
     fi
     sudo rm -R djhub
