@@ -1,7 +1,8 @@
-*.env
+private.env
 .vscode
 build
 dist
 __pycache__
 *.egg-info
 datajoint-dev.pem
+djhub

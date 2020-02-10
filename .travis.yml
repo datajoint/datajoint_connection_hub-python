@@ -23,7 +23,14 @@ main: &main
         - sed -i 's|\\"|"|g' /home/travis/keys/datajoint-dev.pem
         - sed -i 's|\\ | |g' /home/travis/keys/datajoint-dev.pem
         - sed -i 's|\\t|\t|g' /home/travis/keys/datajoint-dev.pem
-        - docker-compose -f LNX-docker-compose.yml up --build --exit-code-from app
+        - echo $DJBOT_PRIVATE_KEY > /home/travis/keys/datajointbot-test.pem 2>&1
+        - sed -i 's|\\n|\n|g' /home/travis/keys/datajointbot-test.pem
+        - sed -i 's|\\"|"|g' /home/travis/keys/datajointbot-test.pem
+        - sed -i 's|\\ | |g' /home/travis/keys/datajointbot-test.pem
+        - sed -i 's|\\t|\t|g' /home/travis/keys/datajointbot-test.pem
+        - eval "$(ssh-agent -s)"
+        - ssh-add /home/travis/keys/datajointbot-test.pem
+        - ./serve.sh up TRAVIS
 jobs:
   include:
     - <<: *main
