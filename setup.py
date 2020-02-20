@@ -2,6 +2,7 @@ import setuptools
 from os import path
 
 pkg_name = "raphael_connection_hub"
+attr_name = 'ConnectionPlugin'
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -27,7 +28,12 @@ setuptools.setup(
     setup_requires=['setuptools_certificate'],
     install_requires=['datajoint', 'requests'],
     privkey_path='~/keys/datajoint-dev.pem',
-    entry_points={
-        'datajoint.plugins': 'connection = {}'.format(pkg_name)
-    },
+    # entry_points={
+    #     'datajoint.plugins': 'connection = {}'.format(pkg_name)
+    # },
+    # entry_points={
+    #     'datajoint_plugins.connection': [
+    #         'hub = {}.connection:{}'.format(pkg_name, attr_name)
+    #     ]
+    # },
 )
