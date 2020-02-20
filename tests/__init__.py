@@ -7,13 +7,14 @@ importlib.reload(sys.modules['datajoint'])
 import datajoint as dj
 from hubapi.schema import *
 from os import environ
+import uuid
 
 
 def setup_package():
-    Org.insert1(['datajoint'])
+    Org.insert([dict(org_name="datajoint", org_id=uuid.uuid4())])
     db_inst = '{}:3306'.format(environ.get('DJ_HOST', 'fakeservices.datajoint.io'))
-    DatabaseInstance.insert1([db_inst])
-    Project.insert1(['datajoint', 'travis', db_inst])
+    DatabaseInstance.insert([dict(database_dsn=db_inst, database_id=uuid.uuid4())])
+    Project.insert([dict(project_name="travis", **(Org & 'org_name="datajoint"').fetch1('KEY'), **(DatabaseInstance & 'database_dsn="{}"'.format(db_inst)).fetch1('KEY'), project_id=uuid.uuid4())])
 
 
 def teardown_package():
