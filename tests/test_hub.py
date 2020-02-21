@@ -1,8 +1,9 @@
-from raphael_connection_hub.connection import get_host_hook as get_host
+from raphael_connection_hub.connection import ConnectionPlugin
 import raphael_connection_hub.connection as hub
 import datajoint as dj
 from datajoint.errors import DataJointError
 from nose.tools import assert_equal, raises
+get_host = ConnectionPlugin.get_host
 
 
 def test_normal_host():
