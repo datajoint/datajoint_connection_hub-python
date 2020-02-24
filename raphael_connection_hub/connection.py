@@ -7,7 +7,7 @@ import pymysql as client
 HUB_PROTOCOL = 'hub://'
 REQUEST_PROTOCOL = 'https://'
 API_ROUTE = '/api'
-API_TARGETS = dict(PROJECT='/project')
+API_TARGETS = dict(PIPELINE='/pipeline')
 
 session = requests.Session()
 session.mount(REQUEST_PROTOCOL, HTTPAdapter(max_retries=3))
@@ -20,8 +20,8 @@ class ConnectionPlugin():
         if re.match(HUB_PROTOCOL, host_input) and len(hub_path) > 2:
             try:
                 resp = session.get('{}{}{}{}'.format(REQUEST_PROTOCOL,
-                    hub_path[0][1:], API_ROUTE, API_TARGETS['PROJECT']),
-                    params={'org_name': hub_path[1][1:], 'project_name': hub_path[2][1:]},
+                    hub_path[0][1:], API_ROUTE, API_TARGETS['PIPELINE']),
+                    params={'org_name': hub_path[1][1:], 'pipeline_name': hub_path[2][1:]},
                     timeout=10)
                 if resp.status_code == 200:
                     return resp.json()[0]['database_dsn']
@@ -32,7 +32,7 @@ class ConnectionPlugin():
                 elif resp.status_code == 404:
                     raise DataJointError(
                         'DataJoint Hub endpoint `{}{}{}{}` unavailable.'.format(
-                        REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE, API_TARGETS['PROJECT']))
+                        REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE, API_TARGETS['PIPELINE']))
             except requests.exceptions.SSLError:
                 raise DataJointError(
                     'TLS security violation on DataJoint Hub target `{}{}{}`.'.format(

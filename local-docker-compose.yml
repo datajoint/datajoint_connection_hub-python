@@ -34,7 +34,7 @@ services:
       interval: 1s
   hub:
     extends:
-      file: djhub/api/docker-compose.yml
+      file: djhub/api/docker-compose.base.yml
       service: hubapi
     <<: *net
     # ports:
