@@ -1,8 +1,9 @@
-from raphael_connection_hub.connection import get_host_hook as get_host
-import raphael_connection_hub.connection as hub
+from datajoint_connection_hub import ConnectionPlugin
+import datajoint_connection_hub as hub
 import datajoint as dj
 from datajoint.errors import DataJointError
 from nose.tools import assert_equal, raises
+get_host = ConnectionPlugin.get_host
 
 
 def test_normal_host():
@@ -19,7 +20,7 @@ def test_hub_host():
 
 
 @raises(DataJointError)
-def test_hub_missing_project():
+def test_hub_missing_pipeline():
     get_host('hub://fakeservices.datajoint.io/datajoint/test')
 
 
@@ -41,7 +42,7 @@ def test_hub_unreachable_server():
 @raises(DataJointError)
 def test_hub_unreachable_endpoint():
     current = hub.API_TARGETS
-    hub.API_TARGETS = {'PROJECT': '/wrong_one'}
+    hub.API_TARGETS = {'PIPELINE': '/wrong_one'}
     try:
         get_host('hub://fakeservices.datajoint.io/datajoint/travis')
     except:

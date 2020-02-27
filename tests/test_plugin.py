@@ -1,5 +1,5 @@
-from datajoint.plugin import discovered_plugins
+from datajoint.plugin import connection_plugins
 
 
 def test_check_plugin_status():
-    assert(discovered_plugins['raphael_connection_hub']['verified'])
+    assert(connection_plugins['hub']['verified'])

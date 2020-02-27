@@ -62,20 +62,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio:
+        condition: service_healthy
       hub:
         condition: service_started
   app:
     <<: *net
     image: datajoint/pydev:${PY_VER}-alpine${ALPINE_VER}
     depends_on:
-      db:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
       fakeservices.datajoint.io:
         condition: service_healthy
-      hub:
-        condition: service_started
     environment:
       - DJ_HOST=fakeservices.datajoint.io
       - DJ_USER
@@ -96,7 +92,7 @@ services:
       /bin/sh -c
        "
         mkdir /home/dja/datajoint-python;
-        git clone -b plugin --single-branch https://github.com/guzman-raphael/datajoint-python.git /home/dja/datajoint-python
+        git clone -b plugin --single-branch https://github.com/datajoint/datajoint-python.git /home/dja/datajoint-python
         pip install --user nose nose-cov coveralls /home/dja/datajoint-python . ./djhub/api;
         pip freeze | grep datajoint;
         # datajoint nosetests, then plugin nosetests
