@@ -15,7 +15,7 @@ setuptools.setup(
     version=__version__,
     author="Raphael Guzman",
     author_email="raphael.h.guzman@gmail.com",
-    description="Official DataJoint Hub plugin.",
+    description="Official DataJoint Python plugin for connection to DJNeuro's hosted instances.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/datajoint/datajoint_connection_hub-python",
