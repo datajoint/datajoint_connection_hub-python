@@ -18,7 +18,7 @@ setuptools.setup(
     description="Official DataJoint Hub plugin.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/datajoint/datajoint_connection_hub",
+    url="https://github.com/datajoint/datajoint_connection_hub-python",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
