@@ -3,6 +3,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from datajoint.errors import DataJointError
 import pymysql as client
+from .version import __version__
 
 HUB_PROTOCOL = 'hub://'
 REQUEST_PROTOCOL = 'https://'

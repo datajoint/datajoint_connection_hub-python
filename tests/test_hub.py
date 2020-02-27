@@ -1,5 +1,5 @@
-from raphael_connection_hub.connection import ConnectionPlugin
-import raphael_connection_hub.connection as hub
+from datajoint_connection_hub import ConnectionPlugin
+import datajoint_connection_hub as hub
 import datajoint as dj
 from datajoint.errors import DataJointError
 from nose.tools import assert_equal, raises

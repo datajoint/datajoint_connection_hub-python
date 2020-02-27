@@ -1,13 +1,13 @@
 import setuptools
 from os import path
 
-pkg_name = "raphael_connection_hub"
+pkg_name = "datajoint_connection_hub"
 attr_name = 'ConnectionPlugin'
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open(path.join(path.abspath(path.dirname(__file__)), pkg_name, 'meta.py')) as f:
+with open(path.join(path.abspath(path.dirname(__file__)), pkg_name, 'version.py')) as f:
     exec(f.read())
 
 setuptools.setup(
@@ -18,7 +18,7 @@ setuptools.setup(
     description="Official DataJoint Hub plugin.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/guzman-raphael/djpyplugin_connection_hub",
+    url="https://github.com/datajoint/datajoint_connection_hub",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -30,7 +30,7 @@ setuptools.setup(
     privkey_path='~/keys/datajoint-dev.pem',
     entry_points={
         'datajoint_plugins.connection': [
-            'hub = {}.connection:{}'.format(pkg_name, attr_name),
+            'hub = {}:{}'.format(pkg_name, attr_name),
         ],
     },
 )
