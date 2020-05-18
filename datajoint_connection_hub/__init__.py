@@ -2,6 +2,7 @@ import re
 import requests
 from requests.adapters import HTTPAdapter
 from datajoint.errors import DataJointError
+from datajoint.connection import get_host_hook
 import pymysql as client
 from .version import __version__
 
@@ -21,27 +22,28 @@ class ConnectionPlugin():
         if re.match(HUB_PROTOCOL, host_input) and len(hub_path) > 2:
             try:
                 resp = session.get('{}{}{}{}'.format(REQUEST_PROTOCOL,
-                    hub_path[0][1:], API_ROUTE, API_TARGETS['PIPELINE']),
-                    params={'org_name': hub_path[1][1:], 'pipeline_name': hub_path[2][1:]},
-                    timeout=10)
+                                   hub_path[0][1:], API_ROUTE, API_TARGETS['PIPELINE']),
+                                   params={'org_name': hub_path[1][1:],
+                                   'pipeline_name': hub_path[2][1:]}, timeout=10)
                 if resp.status_code == 200:
                     return resp.json()[0]['database_dsn']
                 elif resp.status_code == 204:
                     raise DataJointError(
                         'DataJoint Hub database resource `{}/{}/{}` not found.'.format(
-                        hub_path[0][1:], hub_path[1][1:], hub_path[2][1:]))
+                            hub_path[0][1:], hub_path[1][1:], hub_path[2][1:]))
                 elif resp.status_code == 404:
                     raise DataJointError(
                         'DataJoint Hub endpoint `{}{}{}{}` unavailable.'.format(
-                        REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE, API_TARGETS['PIPELINE']))
+                            REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE,
+                            API_TARGETS['PIPELINE']))
             except requests.exceptions.SSLError:
                 raise DataJointError(
                     'TLS security violation on DataJoint Hub target `{}{}{}`.'.format(
-                    REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE))
+                        REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE))
             except requests.exceptions.ConnectionError:
                 raise DataJointError(
                     'Unable to reach DataJoint Hub target `{}{}{}`.'.format(
-                    REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE))
+                        REQUEST_PROTOCOL, hub_path[0][1:], API_ROUTE))
         elif not re.match('.*/', host_input):
             return host_input
         else:
@@ -54,8 +56,8 @@ class ConnectionPlugin():
         except client.err.OperationalError:
             if not connection_obj.is_connected:
                 target = [int(v) if i == 1 else v
-                    for i, v in enumerate(
-                    get_host_hook(connection_obj.conn_info['host_input']).split(':'))]
+                          for i, v in enumerate(
+                            get_host_hook(connection_obj.conn_info['host_input']).split(':'))]
                 if (target[0] != connection_obj.conn_info['host'] or len(target) > 1 and
                         target[1] != connection_obj.conn_info['port']):
                     connection_obj.conn_info['host'] = target[0]

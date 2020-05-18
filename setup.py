@@ -26,7 +26,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     setup_requires=['setuptools_certificate'],
-    install_requires=['datajoint', 'requests'],
+    install_requires=['datajoint>=0.12.5b1', 'requests'],
     privkey_path='~/keys/datajoint-dev.pem',
     entry_points={
         'datajoint_plugins.connection': [
