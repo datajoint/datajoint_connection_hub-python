@@ -23,8 +23,8 @@ class ConnectionPlugin():
             try:
                 resp = session.get('{}{}{}{}'.format(REQUEST_PROTOCOL,
                                    hub_path[0][1:], API_ROUTE, API_TARGETS['PIPELINE']),
-                    params={'org_name': hub_path[1][1:], 'pipeline_name': hub_path[2][1:]},
-                    timeout=10)
+                                   params={'org_name': hub_path[1][1:],
+                                   'pipeline_name': hub_path[2][1:]}, timeout=10)
                 if resp.status_code == 200:
                     return resp.json()[0]['database_dsn']
                 elif resp.status_code == 204:
