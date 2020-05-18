@@ -2,6 +2,7 @@ import re
 import requests
 from requests.adapters import HTTPAdapter
 from datajoint.errors import DataJointError
+from datajoint.connection import get_host_hook
 import pymysql as client
 from .version import __version__
 
