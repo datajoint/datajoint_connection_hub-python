@@ -1,3 +1,7 @@
+> ⚠️ **This repository is archived and no longer maintained.**
+> Abandoned connection hub plugin.
+> For current DataJoint development, see [datajoint-python](https://github.com/datajoint/datajoint-python).
+
 # DataJoint Hub Plugin
 
 This is an official DataJoint Python plugin for connection to DJNeuro's hosted instances. [https://djneuro.io/services](https://djneuro.io/services)
